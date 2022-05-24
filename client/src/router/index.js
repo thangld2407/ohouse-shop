@@ -1,23 +1,33 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import LoginPages from '../views/login'
+Vue.use(VueRouter)
 
-Vue.use(VueRouter);
+const routes = [
+  {
+    path: '/login',
+    meta: {
+      title: 'Login',
+      icon: ''
+    },
+    name: 'Login',
+    component: LoginPages
+  },
+  {
+    path: '/',
+    name: 'home',
+    redirect: '/login',
+  },
+  {
+    path: '/about',
+    name: 'about',
+  }
+]
 
-export const constantRoutes = [];
+const router = new VueRouter({
+  routes,
+  mode: "history",
+  scrollBehavior: () => ({y: 0}),
+})
 
-export const asyncRoutes = [];
-
-const createRouter = () =>
-  new VueRouter({
-    scrollBehavior: () => ({ y: 0 }),
-    routes: constantRoutes,
-  });
-
-const router = createRouter();
-
-export function resetRouter() {
-  const newRouter = createRouter();
-  router.matcher = newRouter.matcher;
-}
-
-export default router;
+export default router

@@ -1,23 +1,25 @@
-import Vue from "vue";
-import App from "./pages/App.vue";
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
 
-// router
-import router from "./router";
-Vue.use(router);
+
+
+
 // Component library
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-Vue.use(BootstrapVue);
-Vue.use(IconsPlugin);
+import './scss/app.scss';
 
 // Icon Library
 import "./assets/font-awesome/css/all.min.css";
 
-Vue.config.productionTip = false;
+Vue.use(BootstrapVue);
+Vue.use(IconsPlugin);
+
+Vue.config.productionTip = false
 
 new Vue({
-  el: "#app",
   router,
-  render: (h) => h(App),
-});
+  render: function (h) { return h(App) }
+}).$mount('#app')
