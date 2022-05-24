@@ -1,0 +1,23 @@
+{
+  "name": "ohouse-shop",
+  "version": "1.0.0",
+  "description": "Ohouse Shop Manager",
+  "main": "index.js",
+  "scripts": {
+    "lint": "npm run lint --fix --prefix client ",
+    "build": "npm run build --prefix client ",
+    "watch": "npm run serve --prefix client",
+    "server": "npm run dev --prefix server ",
+    "package-install": "npm install --prefix client && npm install --prefix server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thangld2407/ohouse-shop.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thangld2407/ohouse-shop/issues"
+  },
+  "homepage": "https://github.com/thangld2407/ohouse-shop#readme"
+}
