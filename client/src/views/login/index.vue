@@ -1,12 +1,7 @@
 <template>
   <div id="login" class="container-fluid">
     <div class="row">
-      <div class="col-md-6 col-sm-12 col-lg-6">
-        <h1>1</h1>
-      </div>
-      <div class="col-md-6 col-sm-12 col-lg-6">
-        <h1>1</h1>
-      </div>
+      Login Pages
     </div>
   </div>
 </template>
