@@ -1,26 +1,34 @@
 <template>
-  <div id="login" class="container-fluid">
-    <div class="row">
-      <button class="btn btn-primary" @click="handleGetProduct()">
-        Get Product
-      </button>
-
-      <table v-if="products.length > 0" class="table table-hover">
-        <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Product Description</th>
-            <th>Product Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(product, index) in products" :key="index">
-            <td>{{ product.product_name }}</td>
-            <td>{{ product.description }}</td>
-            <td>{{ formatPrice(product.price) }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div id="login">
+    <div class="login-form">
+      <div class="login-form__header">
+        <span>Create Account</span>
+        <div class="login-form__header-types-login">
+          <button class="btn btn-outline-secondary">
+            <i class="fab fa-google"></i>
+          </button>
+          <button class="btn btn-outline-secondary">
+            <i class="fab fa-facebook"></i>
+          </button>
+          <button class="btn btn-outline-secondary">
+            <i class="fab fa-twitter"></i>
+          </button>
+        </div>
+      </div>
+      <div class="login-form__body">
+        <b-form-input v-model="fullname" placeholder="Name"></b-form-input>
+        <b-form-input v-model="email" placeholder="Email"></b-form-input>
+        <b-form-input v-model="password" placeholder="Password"></b-form-input>
+      </div>
+      <div class="login-form__footer">
+        <b-form-checkbox id="checkbox-1" v-model="status" name="checkbox-1">
+          I accept the terms and use
+        </b-form-checkbox>
+        <div class="login-form__footer-action">
+          <button class="btn btn-danger">Sign Up</button>
+          <button class="btn btn-outline-danger">Sign In</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -32,9 +40,9 @@ export default {
   name: "Login",
   data() {
     return {
-      username: "username",
+      fullname: "username",
       products: [],
-      formatPrice
+      formatPrice,
     };
   },
   methods: {
@@ -47,7 +55,6 @@ export default {
         console.error(error);
       }
     },
-    
   },
 };
 </script>
