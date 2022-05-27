@@ -1,0 +1,18 @@
+.btn {
+  &-manual {
+    background-color: #354259;
+    color: #ECE5C7;
+    &:hover {
+      background-color: #49566d;
+    color: #ECE5C7;
+      
+    }
+    &-outline {
+      border: 1px solid #CDC2AE;
+      &:hover {
+        color: #354259;
+        background-color: #CDC2AE;
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@
     border-radius: 5px;
     box-sizing: border-box;
     padding: 40px 20px;
-    min-width: 30%;
+    min-width: 20%;
     text-align: center;
     &__header {
       font-size: 26px;
@@ -24,7 +24,7 @@
         justify-content: center;
         margin-top: 20px;
         margin-bottom: 20px;
-        .btn-outline-secondary {
+        .btn-manual-outline {
           margin: 0 10px;
           border-radius: 50%;
           width: 40px;
@@ -36,7 +36,7 @@
       }
     }
     &__body {
-      .form-control {
+      &-form {
         margin: 20px 0;
       }
     }
@@ -50,7 +50,7 @@
         align-items: center;
         justify-content: space-evenly;
         .btn {
-          min-width: 150px;
+          min-width: 120px;
         }
       }
     }
