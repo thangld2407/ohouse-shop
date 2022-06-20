@@ -18,15 +18,9 @@
       <div class="login-form__body">
         <div class="login-form__body-form">
           <b-form-input v-model="fullname" placeholder="Name"></b-form-input>
-          <small v-if="isErrorMessage" class="float-left text-danger">{{
-            messgaeErrors
-          }}</small>
         </div>
         <div class="login-form__body-form">
           <b-form-input v-model="email" placeholder="Email"></b-form-input>
-          <small v-if="isErrorMessage" class="float-left text-danger">{{
-            messgaeErrors
-          }}</small>
         </div>
         <div class="login-form__body-form">
           <b-form-input
@@ -34,9 +28,6 @@
             v-model="password"
             placeholder="Password"
           ></b-form-input>
-          <small v-if="isErrorMessage" class="float-left text-danger">{{
-            messgaeErrors
-          }}</small>
         </div>
       </div>
       <div class="login-form__footer">
@@ -47,7 +38,7 @@
           <button
             class="btn btn-manual"
             :disabled="isProcessing"
-            @click="handleLogin()"
+            @click="handleRegister()"
           >
             Sign Up
             <b-spinner small v-if="isProcessing"></b-spinner>
@@ -61,6 +52,7 @@
 
 <script>
 import { MakeToast } from "../../utils/MakeToast";
+import { register } from "../../api/module/auth";
 export default {
   name: "Login",
   data() {
@@ -82,33 +74,24 @@ export default {
         password: this.password,
         fullname: this.fullname,
       };
-      await this.validation(data);
-      if (this.countErrors === Object.keys(data).length) {
-        MakeToast({
-          variant: "success",
-          title: "Success",
-          content: data.email,
-        });
-        setTimeout(() => {
-        this.isErrorMessage = false;
-          this.isProcessing = false;
-        }, 2000);
-      }
-    },
-    validation(data) {
-      for (let obj in data) {
-        if (data[obj] === "") {
-          this.messgaeErrors = `You can not empty field ${obj}`;
-          this.isErrorMessage = true;
-          setTimeout(() => {
-            this.isProcessing = false;
-          }, 2000);
-        } else {
-          this.countErrors += 1;
 
-        }
+      console.log(data);
+    },
+    async handleRegister() {
+      this.isProcessing = true;
+      try {
+        let data = {
+          email: this.email,
+          password: this.password,
+          name: this.fullname,
+        };
+        register(data);
+        this.isProcessing = false;
+      } catch (error) {
+        console.log(error);
       }
     },
+
     resetData() {
       this.email = "";
       this.password = "";
