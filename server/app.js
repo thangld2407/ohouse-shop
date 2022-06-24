@@ -2,6 +2,8 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const app = express();
+const morgan = require("morgan")
+
 
 const router = require("./router");
 const bodyParser = require("body-parser");
@@ -11,6 +13,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(bodyParser.json());
+
+app.use(morgan('tiny'));
+
 app.use(
   bodyParser.urlencoded({
     extended: false,
