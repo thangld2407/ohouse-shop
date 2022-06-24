@@ -40,7 +40,7 @@
             :disabled="isProcessing"
             @click="handleRegister()"
           >
-            Sign Up
+            <span :class="isProcessing ? 'd-none' : 'd-block'"> Sign Up </span>
             <b-spinner small v-if="isProcessing"></b-spinner>
           </button>
           <button class="btn btn-manual-outline">Sign In</button>
@@ -85,7 +85,8 @@ export default {
           password: this.password,
           name: this.fullname,
         };
-        register(data);
+       const response = await register(data);
+       console.log(response)
         this.isProcessing = false;
       } catch (error) {
         console.log(error);
