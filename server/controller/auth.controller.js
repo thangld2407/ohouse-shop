@@ -11,28 +11,34 @@ module.exports = {
     try {
       const { email, password, name } = req.body;
       const is_email = await Auth.findOne({ email: email });
-      if(!email || !password) {
-        res.json({ error: "Email or password is empty" });
-      }else {
-        if (is_email) {
-          return res.status(201).json({
-            data: {},
-            message: "Email already exists",
-            status_code: 201,
-          });
-        } else {
-          let hash = hashPassword(password);
-          const newAuth = new Auth({ email: email, password: hash, name: name });
-          newAuth.save();
-          res.status(200).json({
-            message: "Registration successful",
-            status_code: 200,
-            data: {
-              email: newAuth.email,
-            },
-          });
-        }
+      if (!email || !password) {
+        return res.json({
+          message: "Email or password is empty",
+          error_code: 100,
+          status: false,
+        });
       }
+      if (password.length < 8) {
+        return res.json({
+          message: "Password must be at least 8 characters",
+          error_code: 103,
+          status: false,
+        });
+      }
+      if (is_email) {
+        return res.status(201).json({
+          message: "Email already exists",
+          status_code: 201,
+          status: false,
+        });
+      }
+      let hash = hashPassword(password);
+      const newAuth = new Auth({ email: email, password: hash, name: name });
+      newAuth.save();
+      res.status(200).json({
+        message: "Registration successful",
+        status_code: 200,
+      });
     } catch (error) {
       res.json({ error });
     }
@@ -41,7 +47,20 @@ module.exports = {
     try {
       const { email, password } = req.body;
       const is_email = await Auth.findOne({ email: email });
-
+      if (!email) {
+        return res.json({
+          message: "Email is empty",
+          error_code: 100,
+          status: false,
+        });
+      }
+      if (!password) {
+        return res.json({
+          message: "Password is empty",
+          error_code: 103,
+          status: false,
+        });
+      }
       if (is_email) {
         let hash = is_email.password;
         let is_valid = comparePassword(password, hash);
