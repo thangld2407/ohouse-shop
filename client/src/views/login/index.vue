@@ -43,7 +43,7 @@
             <span :class="isProcessing ? 'd-none' : 'd-block'"> Sign Up </span>
             <b-spinner small v-if="isProcessing"></b-spinner>
           </button>
-          <button class="btn btn-manual-outline">Sign In</button>
+          <button class="btn btn-manual-outline" @click="handleLogin()">Sign In</button>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
 
 <script>
 import { MakeToast } from "../../utils/MakeToast";
-import { register } from "../../api/module/auth";
+import { login, register } from "../../api/module/auth";
 export default {
   name: "Login",
   data() {
@@ -68,14 +68,16 @@ export default {
   },
   methods: {
     async handleLogin() {
-      this.isProcessing = true;
       let data = {
         email: this.email,
         password: this.password,
-        fullname: this.fullname,
       };
-
-      console.log(data);
+      try {
+        const response = await login(data);
+        console.log(response)
+      } catch (error) {
+        console.error(error)
+      }
     },
     async handleRegister() {
       this.isProcessing = true;
@@ -86,7 +88,7 @@ export default {
           name: this.fullname,
         };
        const response = await register(data);
-       console.log(response)
+       this.resetData()
         this.isProcessing = false;
       } catch (error) {
         console.log(error);
