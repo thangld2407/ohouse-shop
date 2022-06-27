@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.use(bodyParser.json());
 
-app.use(morgan('tiny'));
+app.use(morgan("tiny"));
 
 app.use(
   bodyParser.urlencoded({
@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
     statusCode: 200,
   });
 });
-app.use("/api/v1/", router);
+app.use(`/api/${process.env.API_VERSION}/`, router);
 app.use("*", (req, res) => {
   res.status(404).json({
     message: false,
