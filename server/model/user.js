@@ -13,17 +13,25 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
-    telephone: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     dob: {
       type: String,
       required: true,
       trim: true,
-
-    }
+    },
+    role: {
+      type: String,
+      required: true,
+      trim: true,
+      enum: ["admin", "user"],
+    },
+    is_active: {
+      type: Boolean,
+      default: false,
+    },
+    is_deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: {
