@@ -6,3 +6,6 @@ export function getAll(url, params) {
 export function postOne(url, data) {
 	return request.postRequest(url, data);
 }
+export function getOne(url, id) {
+	return request.getRequest(`${url}/${id}`);
+}

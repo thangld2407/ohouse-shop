@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import LoginPages from '../views/login'
+import LoginPages from '../views/Login'
+import UserPage from "../views/User"
 Vue.use(VueRouter)
 
 const routes = [
@@ -19,8 +20,9 @@ const routes = [
     redirect: '/login',
   },
   {
-    path: '/about',
-    name: 'about',
+    path: '/user',
+    name: 'User',
+    component: UserPage
   }
 ]
 
