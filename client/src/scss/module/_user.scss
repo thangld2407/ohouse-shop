@@ -1,6 +1,13 @@
 .user {
   margin-top: 10px;
+  height:100vh;
   &-heading {
     margin-bottom: 10px;
+  }
+  .pagination-user {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-right: 20px;
   }
 }

@@ -12,21 +12,21 @@ module.exports = {
           error_code: 109,
         });
       }
-      if(!user.name) {
+      if (!user.name) {
         return res.status(200).json({
           message: "Name must be required",
           status: false,
           error_code: 100,
         });
       }
-      if(!user.dob) {
+      if (!user.dob) {
         return res.status(200).json({
           message: "Date of birth must be required",
           status: false,
           error_code: 100,
         });
       }
-      if(!user.email) {
+      if (!user.email) {
         return res.status(200).json({
           message: "Email must be required",
           status: false,
@@ -89,6 +89,78 @@ module.exports = {
       });
     } catch (error) {
       res.json({ error });
+    }
+  },
+  async edit(req, res, next) {
+    try {
+      const user = req.body;
+      const { id } = req.params;
+      const data = {
+        name: user.name,
+        email: user.email,
+        dob: user.dob,
+        role: user.role,
+        is_active: user.is_active,
+        is_deleted: user.is_deleted,
+      };
+      // if (!data.name) {
+      //   return res.status(200).json({
+      //     message: "Name must be required",
+      //     status: false,
+      //     error_code: 100,
+      //   });
+      // }
+      // if (!data.dob) {
+      //   return res.status(200).json({
+      //     message: "Date of birth must be required",
+      //     status: false,
+      //     error_code: 100,
+      //   });
+      // }
+
+      const userDb = await UserSchema.findByIdAndUpdate(id, data).lean();
+      const userUpdated = await UserSchema.findById(id, "-__v").lean();
+      if (userDb) {
+        return res.json({
+          message: "User has been updated",
+          status: true,
+          data: userUpdated,
+        });
+      }
+      return res.status(100).json({
+        message: "User not found",
+        status: false,
+        error_code: 110,
+      });
+    } catch (error) {
+      res.status(500).json({
+        error_code: 500,
+        message: "Internal server error",
+      });
+    }
+  },
+  async deletefn(req, res, next) {
+    try {
+      const { id } = req.params;
+      const userDb = await UserSchema.findByIdAndUpdate(id, {
+        is_deleted: true,
+      }).lean();
+      if (userDb) {
+        return res.json({
+          message: "User has been deleted",
+          status: true,
+        });
+      }
+      return res.status(200).json({
+        message: "User not found",
+        status: false,
+        error_code: 110,
+      });
+    } catch (error) {
+      res.status(500).json({
+        error_code: 500,
+        message: "Internal server error",
+      });
     }
   },
 };
