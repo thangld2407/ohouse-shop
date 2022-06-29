@@ -1,33 +1,81 @@
 const { pagination } = require("../helper/pagination.js");
 const UserSchema = require("../model/user.js");
-const { isFloat } = require("../utils/validation.js");
 module.exports = {
-  create(req, res, next) {
-    const user = req.body;
-
-    const data = {
-      name: user.name,
-      email: user.email,
-      telephone: user.telephone,
-      dob: user.dob,
-    };
-    const newUser = new UserSchema(data);
-    newUser.save();
-    res.json({
-      message: "user created",
-      data: newUser,
-    });
+  async create(req, res, next) {
+    try {
+      const user = req.body;
+      const is_exist = await UserSchema.findOne({ email: user.email });
+      if (is_exist) {
+        return res.status(200).json({
+          message: "Email already exist",
+          status: false,
+          error_code: 109,
+        });
+      }
+      if(!user.name) {
+        return res.status(200).json({
+          message: "Name must be required",
+          status: false,
+          error_code: 100,
+        });
+      }
+      if(!user.dob) {
+        return res.status(200).json({
+          message: "Date of birth must be required",
+          status: false,
+          error_code: 100,
+        });
+      }
+      if(!user.email) {
+        return res.status(200).json({
+          message: "Email must be required",
+          status: false,
+          error_code: 100,
+        });
+      }
+      const data = {
+        name: user.name,
+        email: user.email,
+        dob: user.dob,
+        role: user.role,
+        is_active: user.is_active || false,
+        is_deleted: user.is_deleted || false,
+      };
+      const newUser = new UserSchema(data);
+      newUser.save();
+      res.json({
+        message: "User has been created",
+        status: true,
+        data: newUser,
+      });
+    } catch (error) {
+      res.json({ error: error });
+    }
   },
   async get(req, res, next) {
     try {
       let { current_page, per_page } = req.query;
+      let id = req.params.id;
+      if (id) {
+        let user = await UserSchema.findById(id, "-__v").lean();
+        if (user) {
+          return res.json({
+            message: "Get user successfully",
+            status: true,
+            data: user,
+          });
+        }
+        return res.status(200).json({
+          message: "User not found",
+          status: false,
+          error_code: 110,
+        });
+      }
       let currentPage = parseInt(current_page) || 1;
       let count = await UserSchema.countDocuments();
 
-      
       let perPage = parseInt(per_page) || 10;
-      let totalPage = count / perPage;
-      let paginate = pagination(currentPage, perPage, count)
+      let paginate = pagination(currentPage, perPage, count);
 
       const users = await UserSchema.find()
         .limit(paginate.per_page)
@@ -37,7 +85,7 @@ module.exports = {
         message: "Get users successfully",
         status_code: 200,
         data: users,
-        pagination: paginate
+        pagination: paginate,
       });
     } catch (error) {
       res.json({ error });
