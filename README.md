@@ -1,9 +1,16 @@
-# client
 
 ## Project setup
 ```
 yarn run package-install || npm run package-install
 ```
+
+```
+change file config.js follow the instruction
+```
+
+## Run migration data
+
+node migration.js
 
 ### Compiles and hot-reloads for development
 ```
@@ -16,5 +23,4 @@ yarn run build || npm run build
 ```
 
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
