@@ -6,7 +6,7 @@
         <b-input-group>
           <b-form-input trim placeholder="Search by name"></b-form-input>
           <template #append>
-            <button class="btn btn-primary">Search</button>
+            <button class="btn btn-primary">Tìm kiếm</button>
           </template>
         </b-input-group>
       </div>
@@ -31,8 +31,8 @@
       id="my-table"
     >
       <template #cell(is_active)="data">
-        <b-badge v-if="data.item.is_active" variant="success">Active</b-badge>
-        <b-badge v-else variant="danger">Inactive</b-badge>
+        <b-badge v-if="data.item.is_active" variant="success">Đang hoạt động</b-badge>
+        <b-badge v-else variant="danger"></b-badge>
       </template>
       <template #cell(is_deleted)="data">
         <b-badge v-if="data.item.is_deleted" variant="danger">Deleted</b-badge>
@@ -45,8 +45,20 @@
         <button class="btn btn-primary" @click="handleShowModal(data.item._id)">
           Edit
         </button>
-        <button class="btn btn-danger" @click="handleDeleteUser()">
-          Delete
+
+        <button
+          v-if="!data.item.is_deleted"
+          class="btn btn-danger ml-2"
+          @click="handleDeleteUser(data.item._id)"
+        >
+          Xoá
+        </button>
+        <button
+          v-else
+          class="btn btn-warning ml-2"
+          @click="handleRestoreUser(data.item._id)"
+        >
+          Khôi phục
         </button>
       </template>
     </b-table>
@@ -57,6 +69,7 @@
       v-model="pagination.currentPage"
       :total-rows="total"
       :per-page="pagination.perPage"
+      class="float-right position-absolute pagination-user"
       aria-controls="my-table"
     ></b-pagination>
     <!-- End Pagination -->
@@ -86,7 +99,7 @@
           id="input-2"
           placeholder="Enter your name"
           required
-          :disabled="action==='UPDATE'"
+          :disabled="action === 'UPDATE'"
           v-model="user.email"
         ></b-form-input>
       </b-form-group>
@@ -116,6 +129,9 @@
       <b-form-group v-if="action === 'UPDATE'" id="input-group-4">
         <b-form-checkbox v-model="user.is_active">Active</b-form-checkbox>
       </b-form-group>
+      <b-form-group v-if="action === 'UPDATE'" id="input-group-4">
+        <b-form-checkbox v-model="user.is_deleted">Restore</b-form-checkbox>
+      </b-form-group>
 
       <template #modal-footer>
         <button class="btn btn-danger" @click="handleCloseModal()">
@@ -138,7 +154,13 @@
 </template>
 
 <script>
-import { getUser, createUser, getUserById } from "../../api/module/user";
+import {
+  getUser,
+  createUser,
+  getUserById,
+  editUserById,
+  deleteUserById,
+} from "../../api/module/user";
 import { MakeToast } from "../../utils/MakeToast";
 
 export default {
@@ -198,6 +220,8 @@ export default {
         name: "",
         dob: "",
         is_active: false,
+        id: null,
+        is_deleted: false,
       },
       is_show_modal: false,
       action: null,
@@ -276,13 +300,32 @@ export default {
         dob: this.user.dob,
         role: this.user.role,
         is_active: this.user.is_active,
+        is_deleted: this.user.is_deleted,
       };
-      console.log(data);
+      try {
+        const response = await editUserById(this.user.id, data);
+        if (response.status) {
+          this.getAllUser();
+          MakeToast({
+            variant: "success",
+            message: response.message,
+            title: "Success",
+          });
+          this.is_show_modal = false;
+          this.is_processing = false;
+        } else {
+          this.is_processing = false;
+          console.log(response);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
     async handleShowModal(id) {
       this.resetData();
       this.is_show_modal = true;
       if (id) {
+        this.user.id = id;
         this.action = "UPDATE";
         try {
           const response = await getUserById(id);
@@ -290,6 +333,8 @@ export default {
           this.user.name = response.data.name;
           this.user.dob = response.data.dob;
           this.user.role = response.data.role;
+          this.user.is_active = response.data.is_active;
+          this.user.is_deleted = response.data.is_deleted;
         } catch (error) {
           console.log(error);
         }
@@ -306,6 +351,52 @@ export default {
         name: "",
         dob: "",
       };
+    },
+    handleRestoreUser(id) {
+      const is_deleted = false;
+      editUserById(id, { is_deleted })
+        .then((res) => {
+          if (res.status) {
+            MakeToast({
+              variant: "success",
+              message: res.message,
+              title: "Success",
+            });
+            this.getAllUser();
+          } else {
+            MakeToast({
+              variant: "warning",
+              title: "Warning",
+              message: res.message,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    handleDeleteUser(id) {
+      deleteUserById(id)
+        .then((res) => {
+          console.log(res);
+          if (res.status) {
+            MakeToast({
+              variant: "success",
+              message: res.message,
+              title: "Success",
+            });
+            this.getAllUser();
+          } else {
+            MakeToast({
+              variant: "warning",
+              title: "Warning",
+              message: res.message,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     resetData() {
       this.user = {

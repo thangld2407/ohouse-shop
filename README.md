@@ -8,6 +8,12 @@ yarn run package-install || npm run package-install
 change file config.js follow the instruction
 ```
 
+## Run server project
+
+```
+yarn run server || npm run server
+```
+
 ## Run migration data
 
 node migration.js
