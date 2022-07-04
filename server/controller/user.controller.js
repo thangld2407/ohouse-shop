@@ -54,8 +54,16 @@ module.exports = {
   },
   async get(req, res, next) {
     try {
-      let { current_page, per_page } = req.query;
+      let { current_page, per_page, q } = req.query;
       let id = req.params.id;
+      if(q) {
+        let user = await UserSchema.find({ name: { $regex: q, $options: "i" } });
+        return res.status(200).json({
+          message: "Get users successfully",
+          status_code: 200,
+          data: user,
+        });
+      }
       if (id) {
         let user = await UserSchema.findById(id, "-__v").lean();
         if (user) {
