@@ -32,10 +32,10 @@
     >
       <template #cell(is_active)="data">
         <b-badge v-if="data.item.is_active" variant="success">Đang hoạt động</b-badge>
-        <b-badge v-else variant="danger"></b-badge>
+        <b-badge v-else variant="danger">Chưa kích hoạt</b-badge>
       </template>
       <template #cell(is_deleted)="data">
-        <b-badge v-if="data.item.is_deleted" variant="danger">Deleted</b-badge>
+        <b-badge v-if="data.item.is_deleted" variant="danger">Đã xoá</b-badge>
         <b-badge v-else variant="success">Not Delete</b-badge>
       </template>
       <template #cell(created_at)="data">
@@ -230,10 +230,12 @@ export default {
         { value: "admin", text: "Admin" },
         { value: "user", text: "User" },
       ],
+      arr: [1,23,4,5,5,6,7,78]
     };
   },
   created() {
     this.getAllUser();
+    this.testReduce()
   },
 
   computed: {
@@ -406,6 +408,13 @@ export default {
         dob: "",
       };
     },
+    testReduce() {
+      let sum = this.arr.reduce((acc, currentValue, currentIndex, array)=> {
+          return acc + currentValue
+      }, 0) 
+      console.log(sum)
+    }
+    
   },
 };
 </script>

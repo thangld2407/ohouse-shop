@@ -14,6 +14,21 @@ node_modules
 /server/node_modules
 /server/.env
 /server/package-lock.json
+/server/uploads/*.jpeg
+/server/uploads/*.jpg
+/server/uploads/*.png
+/server/uploads/*.gif
+/server/uploads/*.svg
+/server/uploads/*.webp
+/server/uploads/*.mp4
+/server/uploads/*.mp3
+/server/uploads/*.wav
+/server/uploads/*.ogg
+/server/uploads/*.ogv
+/server/uploads/*.webm
+/server/uploads/*.wma
+/server/uploads/*.flac
+/server/uploads/*.*
 # local env files
 .env.local
 .env.*.local
