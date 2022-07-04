@@ -21,6 +21,9 @@ app.use(
     extended: false,
   })
 );
+
+app.use(express.static(`${__dirname}/uploads`));
+
 // CORS
 app.use(cors());
 
@@ -31,6 +34,10 @@ app.get("/", (req, res) => {
   });
 });
 app.use(`/api/${process.env.API_VERSION}/`, router);
+app.get('/uploads/:id', (req, res, next)=> {
+  const id = req.params.id;
+  res.sendFile(`${__dirname}/uploads/${id}`);
+})
 app.use("*", (req, res) => {
   res.status(404).json({
     message: false,

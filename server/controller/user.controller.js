@@ -163,4 +163,8 @@ module.exports = {
       });
     }
   },
+  uploadAvatar(req, res, next) {
+    const file = req.file;
+    res.json({ url: `${process.env.BASE_URL}:${process.env.PORT}/uploads/${file.filename}` });
+  },
 };
