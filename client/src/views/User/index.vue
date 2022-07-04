@@ -4,9 +4,15 @@
     <div class="user-heading row">
       <div class="col-md-4 col-sm-12 col-lg-4">
         <b-input-group>
-          <b-form-input trim placeholder="Search by name"></b-form-input>
+          <b-form-input
+            trim
+            placeholder="Search by name"
+            v-model="key_search"
+          ></b-form-input>
           <template #append>
-            <button class="btn btn-primary">Tìm kiếm</button>
+            <button @click="handleSearchName()" class="btn btn-primary">
+              Tìm kiếm
+            </button>
           </template>
         </b-input-group>
       </div>
@@ -31,7 +37,9 @@
       id="my-table"
     >
       <template #cell(is_active)="data">
-        <b-badge v-if="data.item.is_active" variant="success">Đang hoạt động</b-badge>
+        <b-badge v-if="data.item.is_active" variant="success"
+          >Đang hoạt động</b-badge
+        >
         <b-badge v-else variant="danger">Chưa kích hoạt</b-badge>
       </template>
       <template #cell(is_deleted)="data">
@@ -230,12 +238,13 @@ export default {
         { value: "admin", text: "Admin" },
         { value: "user", text: "User" },
       ],
-      arr: [1,23,4,5,5,6,7,78]
+      arr: [1, 23, 4, 5, 5, 6, 7, 78],
+      key_search: "",
     };
   },
   created() {
     this.getAllUser();
-    this.testReduce()
+    this.testReduce();
   },
 
   computed: {
@@ -409,12 +418,26 @@ export default {
       };
     },
     testReduce() {
-      let sum = this.arr.reduce((acc, currentValue, currentIndex, array)=> {
-          return acc + currentValue
-      }, 0) 
-      console.log(sum)
-    }
-    
+      let sum = this.arr.reduce((acc, currentValue, currentIndex, array) => {
+        return acc + currentValue;
+      }, 0);
+      console.log(sum);
+    },
+    async handleSearchName() {
+      try {
+        const params = {
+          q: this.key_search,
+        };
+        if (params.q) {
+          const response = await getUser(params);
+          this.items = response.data;
+        } else {
+          this.getAllUser();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>

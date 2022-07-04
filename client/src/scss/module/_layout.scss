@@ -1,0 +1,14 @@
+#navbar {
+  nav {
+    background-color: #37E2D5 !important;
+  }
+  .navbar {
+    &-title {
+      font-weight: bold;
+      font-style: italic;
+      color: #1B2430;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+  }
+}
