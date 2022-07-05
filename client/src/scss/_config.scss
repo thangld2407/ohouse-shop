@@ -1,18 +1,26 @@
 .btn {
   &-manual {
-    background-color: #354259;
-    color: #ECE5C7;
+    background-color: $main-color;
+    color: #fff;
     &:hover {
       background-color: #49566d;
-    color: #ECE5C7;
-      
+      color: #fff;
+      outline: 0;
     }
+
     &-outline {
-      border: 1px solid #CDC2AE;
+      border: 1px solid #cdc2ae;
       &:hover {
-        color: #354259;
-        background-color: #CDC2AE;
+        color: #fff;
+        background-color: $main-color;
       }
     }
   }
+  &:hover {
+    outline: 0;
+  }
+}
+
+body {
+  font-family: "Noto Sans JP", sans-serif;
 }

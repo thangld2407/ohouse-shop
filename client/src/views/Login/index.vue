@@ -2,7 +2,7 @@
   <div id="login">
     <div class="login-form">
       <div class="login-form__header">
-        <span>Create Account</span>
+        <span>Login</span>
         <div class="login-form__header-types-login">
           <button class="btn btn-manual-outline">
             <i class="fab fa-google"></i>
@@ -16,9 +16,9 @@
         </div>
       </div>
       <div class="login-form__body">
-        <div class="login-form__body-form">
+        <!-- <div class="login-form__body-form">
           <b-form-input v-model="fullname" placeholder="Name"></b-form-input>
-        </div>
+        </div> -->
         <div class="login-form__body-form">
           <b-form-input v-model="email" placeholder="Email"></b-form-input>
         </div>
@@ -38,13 +38,16 @@
           <button
             class="btn btn-manual"
             :disabled="isProcessing"
-            @click="handleRegister()"
+            @click="handleLogin()"
           >
-            <span :class="isProcessing ? 'd-none' : 'd-block'"> Sign Up </span>
+            <span :class="isProcessing ? 'd-none' : 'd-block'"> Login </span>
             <b-spinner small v-if="isProcessing"></b-spinner>
           </button>
-          <button class="btn btn-manual-outline" @click="handleLogin()">Sign In</button>
         </div>
+      </div>
+      <router-link to="/register">Register</router-link>
+      <div>
+        <router-link to="/forgot-password">Forgot Password</router-link>
       </div>
     </div>
   </div>
@@ -68,15 +71,39 @@ export default {
   },
   methods: {
     async handleLogin() {
+      this.isProcessing = true;
       let data = {
         email: this.email,
         password: this.password,
       };
       try {
         const response = await login(data);
-        console.log(response)
+        if (response.status_code === 200) {
+          MakeToast({
+            variant: "success",
+            content: response.message,
+            title: "Success",
+          });
+          this.isProcessing = false;
+          // this.$router.push("/");
+        } else if (response.status_code === 401) {
+          console.log("::response::", response);
+          MakeToast({
+            variant: "warning",
+            content: response.message,
+            title: "Warning",
+          });
+          this.isProcessing = false;
+        } else {
+          MakeToast({
+            variant: "warning",
+            content: response.message,
+            title: "Warning",
+          });
+          this.isProcessing = false;
+        }
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     },
     async handleRegister() {
@@ -87,8 +114,8 @@ export default {
           password: this.password,
           name: this.fullname,
         };
-       const response = await register(data);
-       this.resetData()
+        const response = await register(data);
+        this.resetData();
         this.isProcessing = false;
       } catch (error) {
         console.log(error);

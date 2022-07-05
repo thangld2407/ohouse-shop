@@ -31,11 +31,26 @@
     <b-table
       :items="items"
       :fields="fields"
-      responsive
       :outlined="false"
       :fixed="false"
+      :busy="isLoading"
+      :show-empty="items.length === 0"
+      responsive
+      hover
       id="my-table"
+      class="user-table"
     >
+      <template #table-busy>
+        <div class="text-center text-danger my-2">
+          <b-spinner class="align-middle"></b-spinner>
+          <strong>Loading...</strong>
+        </div>
+      </template>
+      <template #table-empty>
+        <div class="text-center text-danger my-2">
+          <strong>Không có dữ liệu</strong>
+        </div>
+      </template>
       <template #cell(is_active)="data">
         <b-badge v-if="data.item.is_active" variant="success"
           >Đang hoạt động</b-badge
@@ -210,6 +225,7 @@ export default {
           label: "Action",
         },
       ],
+      isLoading: false,
       items: [],
       selected: null,
       total: 0,
@@ -259,16 +275,23 @@ export default {
   },
   methods: {
     async getAllUser() {
+      this.isLoading = true;
       try {
         const params = {
           per_page: this.pagination.perPage,
           current_page: this.pagination.currentPage,
         };
         const res = await getUser(params);
-        this.total = res.pagination.total_page;
-        this.items = res.data;
+        if (res.status_code === 200) {
+          this.total = res.pagination.total_page;
+          this.items = res.data;
+        } else {
+          this.items = [];
+        }
+        this.isLoading = false;
       } catch (error) {
-        console.log(error);
+        this.items = [];
+        this.isLoading = false;
       }
     },
     async handleCreateUser() {
@@ -285,17 +308,17 @@ export default {
         if (response.status) {
           MakeToast({
             variant: "success",
-            message: response.message,
-            title: "Success",
+            title: "TOAST.SUCCESS",
+            content: "USER.FORM.SUCCESS",
           });
           this.is_processing = false;
           this.is_show_modal = false;
           this.getAllUser();
         } else {
           MakeToast({
-            variant: "warning",
-            title: "Warning",
-            message: response.message,
+            variant: "success",
+            title: "TOAST.SUCCESS",
+            content: "USER.FORM.SUCCESS",
           });
           this.is_processing = false;
         }
@@ -319,8 +342,8 @@ export default {
           this.getAllUser();
           MakeToast({
             variant: "success",
-            message: response.message,
             title: "Success",
+            content: response.message,
           });
           this.is_show_modal = false;
           this.is_processing = false;
@@ -364,14 +387,13 @@ export default {
       };
     },
     handleRestoreUser(id) {
-      const is_deleted = false;
-      editUserById(id, { is_deleted })
+      editUserById(id, { is_deleted: false })
         .then((res) => {
           if (res.status) {
             MakeToast({
               variant: "success",
-              message: res.message,
               title: "Success",
+              content: res.message,
             });
             this.getAllUser();
           } else {
@@ -393,7 +415,7 @@ export default {
           if (res.status) {
             MakeToast({
               variant: "success",
-              message: res.message,
+              content: res.message,
               title: "Success",
             });
             this.getAllUser();
@@ -401,7 +423,7 @@ export default {
             MakeToast({
               variant: "warning",
               title: "Warning",
-              message: res.message,
+              content: res.message,
             });
           }
         })

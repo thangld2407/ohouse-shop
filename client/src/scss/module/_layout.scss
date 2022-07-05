@@ -1,12 +1,17 @@
 #navbar {
   nav {
-    background-color: #37E2D5 !important;
+    background-color: #ffffff !important;
+    border-top: 1px solid #eaedef;
+    border-bottom: 1px solid #eaedef;
+    position: relative;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
   .navbar {
     &-title {
       font-weight: bold;
       font-style: italic;
-      color: #1B2430;
+      color: #1b2430;
       font-size: 28px;
       line-height: 1.2;
     }

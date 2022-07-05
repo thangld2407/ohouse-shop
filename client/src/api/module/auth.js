@@ -8,3 +8,6 @@ export function register(data) {
 export function login(data) {
   return requestApi.postOne(`${url}/login`, data);
 }
+export function forgotPassword(data) {
+  return requestApi.postOne(`${url}/forgot-password`, data);
+}

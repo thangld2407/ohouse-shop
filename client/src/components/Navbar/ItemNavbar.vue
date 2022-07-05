@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="d-flex align-items-center justify-content-center">
     <li v-for="(route, index) in routes" :key="index">
       <b-nav-item>
         <router-link
