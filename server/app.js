@@ -2,13 +2,13 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const app = express();
-const morgan = require("morgan")
-
+const morgan = require("morgan");
 
 const router = require("./router");
 const bodyParser = require("body-parser");
 
 //express middleware
+const requireAuth = require("./middleware/requireAuth");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -33,11 +33,11 @@ app.get("/", (req, res) => {
     statusCode: 200,
   });
 });
-app.use(`/api/${process.env.API_VERSION}/`, router);
-app.get('/uploads/:id', (req, res, next)=> {
+app.use(`/api/${process.env.API_VERSION}/`, requireAuth, router);
+app.get("/uploads/:id", (req, res, next) => {
   const id = req.params.id;
   res.sendFile(`${__dirname}/uploads/${id}`);
-})
+});
 app.use("*", (req, res) => {
   res.status(404).json({
     message: false,

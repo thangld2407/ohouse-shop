@@ -67,7 +67,6 @@ module.exports = {
         if (is_valid) {
           const token = createToken({ user: is_email });
           const refreshToken = createRefreshToken({ user: is_email });
-          console.log("authorization");
           res.header("authorization", token);
           res.status(200).json({
             message: "Login successful",
@@ -77,11 +76,16 @@ module.exports = {
             expires_in: 7200,
           });
         } else {
-          res.status(401).json({
+          res.status(200).json({
             message: "Invalid password",
             status_code: 401,
           });
         }
+      }else {
+        res.status(200).json({
+          message: "Invalid password",
+          status_code: 401,
+        });
       }
     } catch (error) {
       res.json(error);
