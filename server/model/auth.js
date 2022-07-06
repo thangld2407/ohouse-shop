@@ -14,11 +14,9 @@ const authSchema = new mongoose.Schema(
       trim: true,
       minlength: 6,
     },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     }
   },
   {

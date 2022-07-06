@@ -1,4 +1,5 @@
 const Auth = require("../model/auth");
+const USER = require("../model/user");
 const { hashPassword, comparePassword } = require("../utils/hashPassword");
 const {
   createToken,
@@ -46,7 +47,6 @@ module.exports = {
   async login(req, res, next) {
     try {
       const { email, password } = req.body;
-      const is_email = await Auth.findOne({ email: email });
       if (!email) {
         return res.json({
           message: "Email is empty",
@@ -61,6 +61,7 @@ module.exports = {
           status: false,
         });
       }
+      const is_email = await USER.findOne({ email: email });
       if (is_email) {
         let hash = is_email.password;
         let is_valid = comparePassword(password, hash);

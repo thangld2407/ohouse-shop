@@ -13,16 +13,9 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
-    dob: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     role: {
-      type: String,
-      required: true,
-      trim: true,
-      enum: ["admin", "user"],
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
     },
     is_active: {
       type: Boolean,
@@ -31,6 +24,11 @@ const userSchema = new mongoose.Schema(
     is_deleted: {
       type: Boolean,
       default: false,
+    },
+    password: {
+      type: String,
+      required: true,
+      trim: true,
     },
   },
   {

@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
     statusCode: 200,
   });
 });
-app.use(`/api/${process.env.API_VERSION}/`, requireAuth, router);
+app.use(`/api/${process.env.API_VERSION}/`, router);
 app.get("/uploads/:id", (req, res, next) => {
   const id = req.params.id;
   res.sendFile(`${__dirname}/uploads/${id}`);
