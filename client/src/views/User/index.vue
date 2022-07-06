@@ -17,7 +17,15 @@
         </b-input-group>
       </div>
       <div class="col-md-4 col-sm-12 col-lg-4">
-        <b-form-select v-model="selected" :options="options"></b-form-select>
+        <b-form-select id="input-3" v-model="selected">
+          <b-form-select-option :value="null">Select role</b-form-select-option>
+          <b-form-select-option
+            v-for="(option, index) in role"
+            :key="index"
+            :value="option._id"
+            >{{ option.name }}</b-form-select-option
+          >
+        </b-form-select>
       </div>
       <div class="col-md-2 col-sm-12 col-lg-2">
         <button class="btn btn-primary" @click="handleShowModal()">
@@ -46,24 +54,31 @@
           <strong>Loading...</strong>
         </div>
       </template>
+
       <template #table-empty>
         <div class="text-center text-danger my-2">
           <strong>Không có dữ liệu</strong>
         </div>
       </template>
+
       <template #cell(is_active)="data">
         <b-badge v-if="data.item.is_active" variant="success"
           >Đang hoạt động</b-badge
         >
         <b-badge v-else variant="danger">Chưa kích hoạt</b-badge>
       </template>
+
       <template #cell(is_deleted)="data">
         <b-badge v-if="data.item.is_deleted" variant="danger">Đã xoá</b-badge>
         <b-badge v-else variant="success">Not Delete</b-badge>
       </template>
+
       <template #cell(created_at)="data">
         {{ data.item.created_at.slice(0, 10) }}
       </template>
+
+      <template #cell(role)="data">{{ data.item.role.name }} </template>
+
       <template #cell(action)="data">
         <button class="btn btn-primary" @click="handleShowModal(data.item._id)">
           Edit
@@ -90,7 +105,7 @@
     <!-- Pagination -->
     <b-pagination
       v-model="pagination.currentPage"
-      :total-rows="total"
+      :total-rows="totalRows"
       :per-page="pagination.perPage"
       class="float-right position-absolute pagination-user"
       aria-controls="my-table"
@@ -120,7 +135,7 @@
       <b-form-group id="input-group-2" label="Your email" label-for="input-2">
         <b-form-input
           id="input-2"
-          placeholder="Enter your name"
+          placeholder="Enter your email"
           required
           :disabled="action === 'UPDATE'"
           v-model="user.email"
@@ -128,25 +143,14 @@
       </b-form-group>
 
       <b-form-group id="input-group-3" label="Role:" label-for="input-3">
-        <b-form-select
-          id="input-3"
-          :options="role"
-          v-model="user.role"
-          required
-        ></b-form-select>
-      </b-form-group>
-
-      <b-form-group
-        id="input-group-4"
-        label="Your Date of Birth"
-        label-for="input-4"
-      >
-        <b-form-input
-          id="input-4"
-          type="date"
-          v-model="user.dob"
-          required
-        ></b-form-input>
+        <b-form-select id="input-3" v-model="user.role">
+          <b-form-select-option
+            v-for="(option, index) in role"
+            :key="index"
+            :value="option._id"
+            >{{ option.name }}</b-form-select-option
+          >
+        </b-form-select>
       </b-form-group>
 
       <b-form-group v-if="action === 'UPDATE'" id="input-group-4">
@@ -183,6 +187,7 @@ import {
   getUserById,
   editUserById,
   deleteUserById,
+  getListRole,
 } from "../../api/module/user";
 import { MakeToast } from "../../utils/MakeToast";
 
@@ -205,10 +210,6 @@ export default {
           label: "Email",
         },
         {
-          key: "dob",
-          label: "Date of birth",
-        },
-        {
           key: "role",
           label: "Role",
         },
@@ -229,17 +230,12 @@ export default {
       items: [],
       selected: null,
       total: 0,
-      options: [
-        { value: null, text: "Please select an option" },
-        { value: true, text: "Active" },
-        { value: false, text: "Inactive" },
-      ],
       pagination: {
         currentPage: 1,
-        perPage: 10,
+        perPage: 3,
       },
       user: {
-        role: "admin",
+        role: null,
         email: "",
         name: "",
         dob: "",
@@ -250,22 +246,22 @@ export default {
       is_show_modal: false,
       action: null,
       is_processing: false,
-      role: [
-        { value: "admin", text: "Admin" },
-        { value: "user", text: "User" },
-      ],
+      role: [],
       arr: [1, 23, 4, 5, 5, 6, 7, 78],
       key_search: "",
     };
   },
   created() {
     this.getAllUser();
-    this.testReduce();
+    this.getRole();
   },
 
   computed: {
     handleChangePage() {
       return this.pagination.currentPage;
+    },
+    totalRows() {
+      return this.total;
     },
   },
   watch: {
@@ -281,9 +277,12 @@ export default {
           per_page: this.pagination.perPage,
           current_page: this.pagination.currentPage,
         };
+        if (this.key_search) {
+          params.q = this.key_search;
+        }
         const res = await getUser(params);
         if (res.status_code === 200) {
-          this.total = res.pagination.total_page;
+          this.total = res.pagination.total;
           this.items = res.data;
         } else {
           this.items = [];
@@ -365,14 +364,18 @@ export default {
           const response = await getUserById(id);
           this.user.email = response.data.email;
           this.user.name = response.data.name;
-          this.user.dob = response.data.dob;
-          this.user.role = response.data.role;
+          this.user.role = response.data.role._id;
           this.user.is_active = response.data.is_active;
           this.user.is_deleted = response.data.is_deleted;
         } catch (error) {
           console.log(error);
         }
       } else {
+        this.role.forEach((role) => {
+          if (role.is_default) {
+            this.user.role = role._id;
+          }
+        });
         this.action = "CREATE";
       }
     },
@@ -439,26 +442,18 @@ export default {
         dob: "",
       };
     },
-    testReduce() {
-      let sum = this.arr.reduce((acc, currentValue, currentIndex, array) => {
-        return acc + currentValue;
-      }, 0);
-      console.log(sum);
+    handleSearchName() {
+      this.getAllUser();
     },
-    async handleSearchName() {
-      try {
-        const params = {
-          q: this.key_search,
-        };
-        if (params.q) {
-          const response = await getUser(params);
-          this.items = response.data;
-        } else {
-          this.getAllUser();
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    getRole() {
+      getListRole()
+        .then((res) => {
+          this.role = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      console.log(this.user.role);
     },
   },
 };

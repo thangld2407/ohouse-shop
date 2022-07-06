@@ -2,6 +2,8 @@ import axios from "axios";
 
 const BASE_URL = process.env.VUE_APP_BASE_URL;
 
+const token = localStorage.getItem("access_token");
+
 const service = axios.create({
   baseURL: BASE_URL,
   timeout: 1000000,
@@ -9,7 +11,7 @@ const service = axios.create({
 
 service.interceptors.request.use(
   (config) => {
-    config.headers["Authorization"] = `Bearer `;
+    config.headers["Authorization"] = `Bearer ${token}`;
     return config;
   },
   (error) => {

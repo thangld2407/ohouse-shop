@@ -84,10 +84,10 @@ export default {
             content: response.message,
             title: "Success",
           });
+          localStorage.setItem('access_token', response.access_token);
           this.isProcessing = false;
           // this.$router.push("/");
         } else if (response.status_code === 401) {
-          console.log("::response::", response);
           MakeToast({
             variant: "warning",
             content: response.message,

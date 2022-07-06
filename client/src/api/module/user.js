@@ -20,5 +20,8 @@ export function editUserById(id, data) {
 
 export function deleteUserById(id) {
   return requestApi.deleteOne(`${url}/${id}`)
+}
 
+export function getListRole(params) {
+  return requestApi.getAll(`role/list`, params)
 }
